@@ -316,21 +316,25 @@ public class TelephonyProvider extends ContentProvider
          *
          */
         private void loadApns(SQLiteDatabase db, XmlPullParser parser) {
+            Log.d(TAG, "Entering loadApns...");
+	    int nRows = 0;
             if (parser != null) {
                 try {
                     while (true) {
                         XmlUtils.nextElement(parser);
                         ContentValues row = getRow(parser);
                         if (row != null) {
-                            insertAddingDefaults(db, CARRIERS_TABLE, row);
+                            insertAddingDefaults(db, CARRIERS_TABLE, row);	
+			    nRows++;
                         } else {
                             break;  // do we really want to skip the rest of the file?
                         }
                     }
+                    Log.d(TAG, "Created " + nRows + " APN rows");
                 } catch (XmlPullParserException e)  {
-                    Log.e(TAG, "Got execption while getting perferred time zone.", e);
+                    Log.e(TAG, "Got XmlPullParserException.", e);
                 } catch (IOException e) {
-                    Log.e(TAG, "Got execption while getting perferred time zone.", e);
+                    Log.e(TAG, "Got IOException.", e);
                 }
             }
         }
@@ -393,7 +397,7 @@ public class TelephonyProvider extends ContentProvider
     }
 
     private boolean isLteOnCdma() {
-        return BaseCommands.getLteOnCdmaModeStatic() == Phone.LTE_ON_CDMA_TRUE;
+        return true;//BaseCommands.getLteOnCdmaModeStatic() == Phone.LTE_ON_CDMA_TRUE;
     }
 
     private void setPreferredApnId(Long id) {
